@@ -424,31 +424,368 @@ WHERE r.fecha between '2024-04-25' AND ' 2024-04-27'
 | Cambio de aceite               | Laura          |
 | Revisión de suspensión         | Laura          |
 
-## **SUBCONSULTA**
- ```sql
+# SUBCONSULTA
+
+1. Obtener el cliente que ha gastado más en reparaciones durante el último año.
+
+```sql
+SELECT c.nombre,c.apellido
+FROM cliente AS c
+WHERE c.id =(
+SELECT fkIdCliente
+FROM facturacion AS f
+WHERE f.fecha between  DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND CURDATE()
+ORDER BY f.total desc
+LIMIT 1);
+ ```
+| nombre | apellido |
++--------+----------+
+| Lucía  | Martín   |
+
+ 2. Obtener la pieza más utilizada en reparaciones durante el último mes
+
+
+```sql
+SELECT p.nombre
+FROM pieza AS p
+WHERE p.id = 
+(SELECT rp.fkIdPieza from reparacionPieza AS rp
+WHERE rp.fkIdReparacion in (SELECT r.id 
+from reparacion AS r
+where  r.fecha > DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+GROUP BY rp.fkIdPieza
+ORDER by count(rp.fkIdpieza) desc
+limit 1)
+;
 
  ```
+| nombre                             |
++------------------------------------+
+| Sensor de posición del cigüeñal    |
+
+3. Obtener los proveedores que suministran las piezas más caras
+```sql
+SELECT nombre
+FROM proveedor
+WHERE id=(
+SELECT fkIdProveedor
+FROM ordenCompra
+WHERE id = (
+SELECT fkIdOrdenC
+FROM ordendetalle AS od
+ORDER BY precio DESC
+limit 1));
+
+ ```
+| nombre          |
++-----------------+
+| Suministros ABC |
+
+opcion 2
+```sql
+SELECT p.nombre
+FROM proveedor p
+WHERE p.id IN (
+    SELECT oc.fkIdProveedor
+    FROM ordenCompra oc
+    WHERE oc.id IN (
+        SELECT top_orders.fkIdOrdenC
+        FROM (
+            SELECT od.fkIdOrdenC
+            FROM ordenDetalle od
+            ORDER BY od.precio DESC
+            LIMIT 5
+        ) AS top_orders
+    )
+);
+ ```
+| nombre             |
++--------------------+
+| Suministros ABC    |
+| Distribuciones XYZ |
+
+4. Listar las reparaciones que no utilizaron piezas específicas durante el último año
+
+```sql
+SELECT id 
+from reparacion
+WHERE id not in (SELECT fkIdReparacion
+FROM reparacionPieza
+)
+ORDER by id; 
+ ```
+| id |
++----+
+| 11 |
+| 12 |
+| 13 |
+| 14 |
+| 15 |
+| 16 |
+| 17 |
+| 18 |
+| 19 |
+| 20 |
+| 21 |
+| 22 |
+| 23 |
+| 24 |
+| 29 |
+| 30 |
+
+5. Obtener las piezas que están en inventario por debajo del 10% del stock inicial
+
+
 ```sql
 
  ```
+
+#  PROCEDIMIENTOS ALMACENADOS
+1. Crear un procedimiento almacenado para insertar una nueva reparación.
+
+```sql
+DELIMITER $$
+DROP PROCEDURE IF EXISTS insertar_reparacion;
+CREATE PROCEDURE insertar_reparacion(
+IN fechap date,
+IN fkIdVehiculop INT(11),
+IN fkIdEmpleadop INT(11),
+IN fkIdServiciop INT(11),
+IN costoTotalp DECIMAL(15,2),
+IN descripcionp VARCHAR(150),
+duracionp int)
+BEGIN
+INSERT INTO reparacion (fecha, fkIdVehiculo, fkIdEmpleado, fkIdServicio, costoTotal, descripcion, duracion)
+VALUES(fechap, fkIdVehiculop, fkIdEmpleadop, fkIdServiciop, costoTotalp, descripcionp, duracionp);
+END $$
+DELIMITER ;
+ ```
+CALL
+```sql
+call insertar_reparacion('2024-05-29', 8,4, 4, 300000.00, 'Reparación del motor por sobrecalentamiento', 10);
+
+ ```
+2. Crear un procedimiento almacenado para actualizar el inventario de una pieza.
+
+```sql
+DELIMITER $$
+DROP PROCEDURE IF EXISTS actualizar_inventario;
+CREATE PROCEDURE actualizar_inventario(
+IN idPieza int(11),
+IN aCantidad int,
+IN aubicacion int
+)
+BEGIN
+UPDATE inventario
+SET cantidad=aCantidad,fkIdUbicacion=aubicacion
+WHERE fkIdpieza=idPieza;
+END $$
+DELIMITER ;
+
+ ```
+
+CALL
+```sql
+CALL actualizar_inventario(1,30,2);
+
+ ```
+3. Crear un procedimiento almacenado para eliminar una cita
+```sql
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS eliminar_cita;
+CREATE PROCEDURE eliminar_cita(
+        IN idcita INT
+        )
+BEGIN
+    DELETE FROM cita 
+    WHERE id = idcita;
+END $$
+DELIMITER ;
+ ```
+CALL
+```sql
+
+CALL eliminar_cita(5);
+ ```
+4. Crear un procedimiento almacenado para generar una factura
+
+```sql
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS crear_factura;
+CREATE PROCEDURE crear_factura(
+    IN fechaf date,
+    IN idcliente int(11),
+    IN totalf int
+)
+BEGIN
+INSERT INTO facturacion (fecha, fkIdCliente, total)
+VALUES
+ (fechaf,idcliente,totalf);
+
+END $$
+DELIMITER ;
+ ```
+CALL
+```sql
+
+CALL crear_factura('2024,06,09',10,2500000);
+ ```
+ 5. Crear un procedimiento almacenado para obtener el historial de reparaciones de un vehículo
+```sql
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS obtenerHistorial;
+CREATE PROCEDURE obtenerHistorial(
+    IN idvehiculo int(11)
+)
+BEGIN
+SELECT v.placa,r.id 
+FROM reparacion AS r
+JOIN vehiculo AS v
+ON r. fkIdVehiculo= v.id
+WHERE v.id=idvehiculo;
+END $$
+DELIMITER ;
+ ```
+CALL
+```sql
+
+CALL obtenerHistorial(15);
+ ```
+6. Crear un procedimiento almacenado para calcular el costo total de
+reparaciones de un cliente en un período
+
+```sql
+DELIMITER $$
+
+
+DROP PROCEDURE IF EXISTS costoCliente;
+CREATE PROCEDURE costoCliente(
+    IN idcliente int(11)
+)
+BEGIN
+SELECT sum(costoTotal) AS costoTotalCliente
+FROM reparacion AS r 
+JOIN vehiculo AS v
+ON r.fkIdVehiculo=v.id
+WHERE v.fkCliente= idcliente AND r.fecha BETWEEN '2024-04-25 ' AND '2024-04-27 ';
+END $$
+DELIMITER ;
+ ```
+CALL
+```sql
+
+CALL costoCliente(15);
+ ```
+7. Crear un procedimiento almacenado para obtener la lista de vehículos que requieren mantenimiento basado en el kilometraje.
+
+
+
 ```sql
 
  ```
+CALL
 ```sql
 
- ```
-```sql
 
  ```
+8. Crear un procedimiento almacenado para insertar una nueva orden de compra
+
 ```sql
+DELIMITER $$
+
+
+
+DROP PROCEDURE IF EXISTS InsertarOrdencompra;
+CREATE PROCEDURE InsertarOrdencompra(
+     IN fechaN DATE,
+    IN IdProveedor INT(11),
+    IN IdEmpleado INT(11)
+)
+BEGIN
+INSERT INTO ordenCompra (fecha, fkIdProveedor, fkIdEmpleado)
+VALUES
+(fechaN,IdProveedor,IdEmpleado);
+END $$
+
+DELIMITER ;
 
  ```
+CALL
 ```sql
 
- ```
-```sql
+CALL InsertarOrdencompra('2024-06-07',3,3);
 
  ```
+9. Crear un procedimiento almacenado para actualizar los datos de un cliente
+
 ```sql
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS actualizarCliente;
+CREATE PROCEDURE actualizarCliente(
+    IN idcliente int(11),
+    IN NombreA VARCHAR(50),
+    IN apellidoA VARCHAR(50),
+    IN emailA VARCHAR(50),
+    IN direccionA VARCHAR(50),
+    IN tipoDireccionA int(11),
+    IN CiudadA INT(11),
+    IN numeroA VARCHAR(15),
+    IN tipotelefonoA INT(11)
+
+)
+BEGIN
+UPDATE cliente
+SET nombre=NombreA,apellido=apellidoA,email=emailA
+WHERE id=idcliente;
+UPDATE direccionCliente
+SET direccion=direccionA, fkIdTipoDireccion=tipoDireccionA ,fkCiudad=CiudadA
+
+WHERE fkCliente=idcliente;
+UPDATE telefonoCliente
+SET numero=numeroA,fkIdTipoTelefono=tipotelefonoA
+WHERE fkCliente=idcliente;
+
+
+
+END $$
+DELIMITER ;
+ ```
+CALL
+```sql
+
+CALL actualizarCliente(1,'sebastian','nuñez','jsnunez94@gmail.com','calle 21#22*37',
+1,1,'3044469689',2);
+
+ ```
+10. Crear un procedimiento almacenado para obtener los servicios más solicitados
+en un período
+```sql
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS servicioMAS;
+CREATE PROCEDURE servicioMAS(
+    IN fechaInicaial DATE,
+    IN fechaFinal DATE
+)
+BEGIN
+SELECT s.nombre, count(s.nombre) AS cantidadServicios
+FROM reparacion AS r
+JOIN servicio AS S
+ON r.fkIdServicio = s.id
+WHERE r.fecha BETWEEN fechaInicaial AND fechaFinal
+GROUP BY s.id 
+ORDER BY cantidadServicios DESC;
+END $$
+DELIMITER ;
+
+ ```
+CALL
+```sql
+
+CALL servicioMAS('2024-04-25','2024-04-26');
 
  ```

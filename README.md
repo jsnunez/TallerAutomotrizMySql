@@ -82,6 +82,9 @@ ORDER BY fkCliente;
 
 4. Obtener la cantidad de piezas en inventario para cada pieza
  ```sql
+SELECT fkIdpieza,cantidad FROM inventario;
+
+ ```
 | fkIdpieza | cantidad |
 |-----------|----------|
 |         1 |       30 |
@@ -108,7 +111,6 @@ ORDER BY fkCliente;
 |        22 |       25 |
 |        23 |       30 |
 |        24 |       18 |
- ```
 5. Obtener las citas programadas para un día específico
 
  ```sql

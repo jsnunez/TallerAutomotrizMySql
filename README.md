@@ -239,4 +239,214 @@ group by c.nombre;
 | Isabel |         370000.00 |
 | David  |         675000.00 |
 
+12. Listar los empleados con mayor cantidad de reparaciones realizadas en un
+período específico
 
+
+ ```sql
+SELECT  e.nombre,count(e.id) AS cantidadReparaciones
+FROM empleado AS e
+JOIN reparacion AS r
+ON r.fkIdEmpleado =e.id
+GROUP BY e.nombre
+LIMIT 3;
+
+ ```
+| nombre | count(e.id) |
+|--------|-------------|
+| María  |          16 |
+| Laura  |          14 |
+
+13. Obtener las piezas más utilizadas en reparaciones durante un período
+específico
+ ```sql
+SELECT p.nombre,SUM(r.cantidad) AS cantidadTotal
+FROM pieza AS p
+JOIN reparacionPieza AS r
+ON p.id = r.fkIdpieza
+GROUP BY p.nombre
+ORDER BY cantidadTotal DESC
+LIMIT 1;
+
+
+ ```
+
+| nombre   | cantidadTotal |
+|----------|---------------|
+| Batería  |             8 |
+
+
+14. Calcular el promedio de costo de reparaciones por vehículo
+
+```sql
+
+SELECT v.placa, AVG(r.costoTotal) AS costoPromedio
+FROM vehiculo AS v
+JOIN reparacion AS r
+ON v.id=r.fkIdVehiculo
+GROUP BY v.placa;
+ ```
+
+| placa  | costoPromedio |
+|--------|---------------|
+| EFG123 | 129000.000000 |
+| HIJ456 |  70000.000000 |
+| KLM789 | 135000.000000 |
+| NOP012 |  74000.000000 |
+| PQR345 | 135000.000000 |
+| STU678 | 150000.000000 |
+| MNO345 | 300000.000000 |
+| DEF456 | 300000.000000 |
+| VWX234 | 300000.000000 |
+
+
+15. Obtener el inventario de piezas por proveedor
+```sql
+SELECT pr.nombre AS proveedor, p.nombre AS pieza , i.cantidad
+FROM inventario AS i
+JOIN pieza AS p
+ON i.fkIdpieza=p.id
+JOIN proveedor pr
+ON pr.id=p.fkIdProveedor
+ORDER BY proveedor;
+
+ ```
+
+
+| proveedor               | pieza                              | cantidad |
+|-------------------------|------------------------------------|----------|
+| Comercializadora Andina | Llanta                             |       15 |
+| Comercializadora Andina | Bujía                              |       28 |
+| Comercializadora Andina | Filtro de combustible              |       32 |
+| Comercializadora Andina | Bombillo de faro                   |       40 |
+| Comercializadora Andina | Sensor de posición del cigüeñal    |       22 |
+| Comercializadora Andina | Bomba de combustible               |       18 |
+| Distribuciones XYZ      | Batería                            |       30 |
+| Distribuciones XYZ      | Amortiguador                       |       18 |
+| Distribuciones XYZ      | Correa de distribución             |       17 |
+| Distribuciones XYZ      | Bobina de encendido                |       25 |
+| Distribuciones XYZ      | Filtro de dirección asistida       |       23 |
+| Distribuciones XYZ      | Bomba de agua                      |       16 |
+| Importadora Global      | Pastillas de freno                 |       25 |
+| Importadora Global      | Filtro de aire                     |       35 |
+| Importadora Global      | Radiador                           |       10 |
+| Importadora Global      | Termostato                         |       20 |
+| Importadora Global      | Filtro de habitáculo               |       15 |
+| Importadora Global      | Sensor de presión de aceite        |       30 |
+| Suministros ABC         | Filtro de aceite                   |       30 |
+| Suministros ABC         | Aceite de motor                    |       22 |
+| Suministros ABC         | Sensor de oxígeno                  |       20 |
+| Suministros ABC         | Sensor de temperatura              |       28 |
+| Suministros ABC         | Pastillas de freno traseras        |       30 |
+| Suministros ABC         | Correa de accesorios               |       25 |
+
+16. Listar los clientes que no han realizado reparaciones en el último año
+
+
+```sql
+SELECT c.id, c.nombre, c.apellido, c.email
+FROM cliente c
+WHERE c.id NOT IN (
+    SELECT DISTINCT c.id
+    FROM cliente c
+    JOIN vehiculo v ON c.id = v.fkCliente
+    JOIN reparacion r ON v.id = r.fkIdVehiculo
+    WHERE r.fecha >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+);
+ ```
+| id | nombre    | apellido   | email                        |
+|----|-----------|------------|------------------------------|
+|  1 | sebastian | nuñez      | jsnunez94@gmail.com          |
+|  3 | Carlos    | Gómez      | carlos.gomez@example.com     |
+|  4 | Ana       | Martínez   | ana.martinez@example.com     |
+|  6 | Laura     | Hernández  | laura.hernandez@example.com  |
+|  7 | Pedro     | Ramírez    | pedro.ramirez@example.com    |
+|  9 | Miguel    | Rodríguez  | miguel.rodriguez@example.com |
+| 10 | Lucía     | Martín     | lucia.martin@example.com     |
+| 17 | Alejandro | Mejía      | alejandro.mejia@example.com  |
+| 18 | Carolina  | Salazar    | carolina.salazar@example.com |
+| 19 | Andrés    | Ríos       | andres.rios@example.com      |
+| 20 | Gabriela  | Vargas     | gabriela.vargas@example.com  |
+
+17. Obtener las ganancias totales del taller en un período específico
+
+```sql
+SELECT sum((fd.precio*fd.cantidad)-(r.costoTotal*fd.cantidad)) AS totalGanancia
+FROM facturaDetalle AS fd
+JOIN reparacion AS r
+ON fd.fkIdReparacion= r.id ;
+
+ ```
+
+| totalGanancia |
+|---------------|
+|     355000.00 |
+
+18. Listar los empleados y el total de horas trabajadas en reparaciones en un
+período específico (asumiendo que se registra la duración de cada reparación)
+
+```sql
+SELECT e.nombre,sum(r.duracion) AS cantidadHoras
+FROM empleado AS e
+JOIN reparacion AS r
+ON r.fkIdEmpleado = e.id
+WHERE r.fecha between '2024-04-25' AND ' 2024-04-27'
+GROUP BY e.nombre;
+
+
+ ```
+| nombre | cantidadHoras |
+|--------|---------------|
+| María  |            16 |
+| Laura  |            17 |
+
+
+19. Obtener el listado de servicios prestados por cada empleado en un período
+específico
+ ```sql
+SELECT DISTINCT s.nombre AS servicio ,e.nombre AS nombreEmpleado
+FROM servicio AS s
+JOIN reparacion AS r
+ON r.fkIdServicio= s.id
+JOIN empleado AS e
+ON r.fkIdEmpleado = e.id
+WHERE r.fecha between '2024-04-25' AND ' 2024-04-27'
+;
+| servicio                       | nombreEmpleado |
+|--------------------------------|----------------|
+| Reparación de motor            | María          |
+| Revisión de sistema de escape  | María          |
+| Revisión de suspensión         | María          |
+| Revisión de frenos             | Laura          |
+| Cambio de batería              | Laura          |
+| Cambio de bujías               | Laura          |
+| Cambio de aceite               | Laura          |
+| Revisión de suspensión         | Laura          |
+ ```
+ ```sql
+
+ ```
+```sql
+
+ ```
+```sql
+
+ ```
+```sql
+
+ ```
+```sql
+
+ ```
+```sql
+
+ ```
+```sql
+
+ ```
+```sql
+
+ ```
+```sql
+
+ ```

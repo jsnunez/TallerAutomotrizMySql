@@ -439,7 +439,7 @@ ORDER BY f.total desc
 LIMIT 1);
  ```
 | nombre | apellido |
-+--------+----------+
+|--------|----------|
 | Lucía  | Martín   |
 
  2. Obtener la pieza más utilizada en reparaciones durante el último mes
@@ -460,7 +460,7 @@ limit 1)
 
  ```
 | nombre                             |
-+------------------------------------+
+|------------------------------------|
 | Sensor de posición del cigüeñal    |
 
 3. Obtener los proveedores que suministran las piezas más caras
@@ -478,7 +478,7 @@ limit 1));
 
  ```
 | nombre          |
-+-----------------+
+|-----------------|
 | Suministros ABC |
 
 opcion 2
@@ -500,7 +500,7 @@ WHERE p.id IN (
 );
  ```
 | nombre             |
-+--------------------+
+|--------------------|
 | Suministros ABC    |
 | Distribuciones XYZ |
 
@@ -515,7 +515,7 @@ FROM reparacionPieza
 ORDER by id; 
  ```
 | id |
-+----+
+|----|
 | 11 |
 | 12 |
 | 13 |

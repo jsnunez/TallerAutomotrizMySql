@@ -424,6 +424,7 @@ WHERE r.fecha between '2024-04-25' AND ' 2024-04-27'
 | Cambio de aceite               | Laura          |
 | Revisión de suspensión         | Laura          |
 
+## **SUBCONSULTA**
  ```sql
 
  ```

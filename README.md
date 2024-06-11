@@ -6,16 +6,18 @@ base de datos basada en un taller automotriz
 1. Obtener el historial de reparaciones de un vehículo específico
  
  ```sql
-select id from reparacion
+select r.id AS reparacion,placa from reparacion AS r
+JOIN vehiculo AS v
+ON v.id=r.fkIdVehiculo
 where fkIdVehiculo = 12;
  ```
-| id |
-|----|
-|  6 |
-|  7 |
-|  8 |
-|  9 |
-| 10 |
+| reparacion | placa  |
+|------------|--------|
+|          6 | HIJ456 |
+|          7 | HIJ456 |
+|          8 | HIJ456 |
+|          9 | HIJ456 |
+|         10 | HIJ456 |
 
 2. Calcular el costo total de todas las reparaciones realizadas por un empleado específico en un período de tiempo
 

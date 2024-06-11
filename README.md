@@ -34,51 +34,54 @@ GROUP by fkIdEmpleado ;
 
 
  ```sql
-SELECT fkCliente,placa from vehiculo
+SELECT c.nombre,c.apellido,placa from vehiculo AS v
+JOIN cliente AS c
+on v.fkCliente=c.id
 ORDER BY fkCliente;
+
  ```
-| fkCliente | placa  |
-|-----------|--------|
-|         1 | ABC123 |
-|         1 | HIJ123 |
-|         2 | DEF456 |
-|         2 | KLM456 |
-|         3 | GHI789 |
-|         3 | NOP789 |
-|         4 | JKL012 |
-|         4 | PQR012 |
-|         5 | MNO345 |
-|         5 | STU345 |
-|         6 | PQR678 |
-|         6 | VWX678 |
-|         7 | STU901 |
-|         7 | YZA901 |
-|         8 | VWX234 |
-|         8 | BCD234 |
-|         9 | YZA567 |
-|         9 | EFG567 |
-|        10 | BCD890 |
-|        10 | HIJ890 |
-|        11 | EFG123 |
-|        11 | KLM123 |
-|        12 | HIJ456 |
-|        12 | NOP456 |
-|        13 | KLM789 |
-|        13 | PQR789 |
-|        14 | NOP012 |
-|        14 | STU012 |
-|        15 | PQR345 |
-|        15 | VWX345 |
-|        16 | STU678 |
-|        16 | YZA678 |
-|        17 | VWX901 |
-|        17 | BCD901 |
-|        18 | YZA234 |
-|        18 | EFG234 |
-|        19 | BCD567 |
-|        19 | HIJ567 |
-|        20 | EFG890 |
-|        20 | KLM890 |
+| nombre    | apellido   | placa  |
+|-----------|------------|--------|
+| Juan      | Pérez      | ABC123 |
+| Juan      | Pérez      | HIJ123 |
+| María     | López      | DEF456 |
+| María     | López      | KLM456 |
+| Carlos    | Gómez      | GHI789 |
+| Carlos    | Gómez      | NOP789 |
+| Ana       | Martínez   | JKL012 |
+| Ana       | Martínez   | PQR012 |
+| Luis      | Díaz       | MNO345 |
+| Luis      | Díaz       | STU345 |
+| Laura     | Hernández  | PQR678 |
+| Laura     | Hernández  | VWX678 |
+| Pedro     | Ramírez    | STU901 |
+| Pedro     | Ramírez    | YZA901 |
+| Sofía     | García     | VWX234 |
+| Sofía     | García     | BCD234 |
+| Miguel    | Rodríguez  | YZA567 |
+| Miguel    | Rodríguez  | EFG567 |
+| Lucía     | Martín     | BCD890 |
+| Lucía     | Martín     | HIJ890 |
+| Jorge     | Jiménez    | EFG123 |
+| Jorge     | Jiménez    | KLM123 |
+| Elena     | Sánchez    | HIJ456 |
+| Elena     | Sánchez    | NOP456 |
+| Raúl      | Morales    | KLM789 |
+| Raúl      | Morales    | PQR789 |
+| Isabel    | Castro     | NOP012 |
+| Isabel    | Castro     | STU012 |
+| David     | Ortiz      | PQR345 |
+| David     | Ortiz      | VWX345 |
+| Mónica    | Gutiérrez  | STU678 |
+| Mónica    | Gutiérrez  | YZA678 |
+| Alejandro | Mejía      | VWX901 |
+| Alejandro | Mejía      | BCD901 |
+| Carolina  | Salazar    | YZA234 |
+| Carolina  | Salazar    | EFG234 |
+| Andrés    | Ríos       | BCD567 |
+| Andrés    | Ríos       | HIJ567 |
+| Gabriela  | Vargas     | EFG890 |
+| Gabriela  | Vargas     | KLM890 |
 
 4. Obtener la cantidad de piezas en inventario para cada pieza
  ```sql

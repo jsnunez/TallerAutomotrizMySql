@@ -253,8 +253,7 @@ group by c.nombre;
 | Isabel |         370000.00 |
 | David  |         675000.00 |
 
-12. Listar los empleados con mayor cantidad de reparaciones realizadas en un
-período específico
+12. Listar los empleados con mayor cantidad de reparaciones realizadas en un período específico
 
 
  ```sql
@@ -266,13 +265,12 @@ GROUP BY e.nombre
 LIMIT 3;
 
  ```
-| nombre | count(e.id) |
-|--------|-------------|
-| María  |          16 |
-| Laura  |          14 |
+| nombre | cantidadReparaciones |
+|--------|----------------------|
+| María  |                   16 |
+| Laura  |                   12 |
 
-13. Obtener las piezas más utilizadas en reparaciones durante un período
-específico
+13. Obtener las piezas más utilizadas en reparaciones durante un período específico
  ```sql
 SELECT p.nombre,SUM(r.cantidad) AS cantidadTotal
 FROM pieza AS p

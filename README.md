@@ -6,18 +6,18 @@ base de datos basada en un taller automotriz
 1. Obtener el historial de reparaciones de un vehículo específico
  
  ```sql
-select r.id AS reparacion,placa from reparacion AS r
+select r.id AS reparacion,placa,r.descripcion,fecha from reparacion AS r
 JOIN vehiculo AS v
 ON v.id=r.fkIdVehiculo
 where fkIdVehiculo = 12;
  ```
-| reparacion | placa  |
-|------------|--------|
-|          6 | HIJ456 |
-|          7 | HIJ456 |
-|          8 | HIJ456 |
-|          9 | HIJ456 |
-|         10 | HIJ456 |
+| reparacion | placa  | descripcion                                                | fecha      |
+|------------|--------|------------------------------------------------------------|------------|
+|          6 | HIJ456 | Cambio de batería debido a problemas de arranque           | 2024-04-25 |
+|          7 | HIJ456 | Revisión y cambio de aceite para mantenimiento preventivo  | 2024-04-26 |
+|          8 | HIJ456 | Cambio de bujías para mejorar el rendimiento del motor     | 2024-04-27 |
+|          9 | HIJ456 | Revisión del sistema de escape por ruidos anormales        | 2024-04-28 |
+|         10 | HIJ456 | Lavado exterior e interior del vehículo                    | 2024-04-29 |
 
 2. Calcular el costo total de todas las reparaciones realizadas por un empleado específico en un período de tiempo
 

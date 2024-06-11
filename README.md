@@ -546,8 +546,21 @@ ORDER by id;
 
 
 ```sql
-
+SELECT nombre, i.cantidad,i.stockInicial
+FROM pieza AS p
+JOIN inventario AS i
+ON p.id=i.fkIdpieza
+WHERE i.cantidad<(i.stockInicial*.1);
  ```
+| nombre                        | cantidad | stockInicial |
+|-------------------------------|----------|--------------|
+| Termostato                    |       20 |          300 |
+| Filtro de dirección asistida  |       23 |          250 |
+| Pastillas de freno traseras   |       30 |          330 |
+| Filtro de habitáculo          |       15 |          200 |
+| Sensor de presión de aceite   |       30 |          400 |
+| Bomba de combustible          |       18 |          200 |
+
 
 #  PROCEDIMIENTOS ALMACENADOS
 1. Crear un procedimiento almacenado para insertar una nueva reparación.

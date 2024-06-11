@@ -1,4 +1,3 @@
- drop database tallerautomotriz;
 
 CREATE DATABASE tallerAutomotriz;
 

@@ -698,7 +698,7 @@ CREATE PROCEDURE obtenerHistorial(
     IN idvehiculo int(11)
 )
 BEGIN
-SELECT v.placa,r.id 
+SELECT v.placa,r.id,r.fecha,r.descripcion
 FROM reparacion AS r
 JOIN vehiculo AS v
 ON r. fkIdVehiculo= v.id

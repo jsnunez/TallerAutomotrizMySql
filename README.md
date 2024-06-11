@@ -85,35 +85,38 @@ ORDER BY fkCliente;
 
 4. Obtener la cantidad de piezas en inventario para cada pieza
  ```sql
-SELECT fkIdpieza,cantidad FROM inventario;
+SELECT p.nombre,cantidad FROM inventario i
+JOIN pieza p
+ON i.fkIdpieza=p.id;
+
 
  ```
-| fkIdpieza | cantidad |
-|-----------|----------|
-|         1 |       30 |
-|         2 |       30 |
-|         3 |       25 |
-|         4 |       15 |
-|         5 |       18 |
-|         6 |       22 |
-|         7 |       35 |
-|         8 |       28 |
-|         9 |       17 |
-|        10 |       20 |
-|        11 |       10 |
-|        12 |       32 |
-|        13 |       25 |
-|        14 |       28 |
-|        15 |       20 |
-|        16 |       40 |
-|        17 |       23 |
-|        18 |       30 |
-|        19 |       15 |
-|        20 |       22 |
-|        21 |       16 |
-|        22 |       25 |
-|        23 |       30 |
-|        24 |       18 |
+| nombre                             | cantidad |
+|------------------------------------|----------|
+| Batería                            |       20 |
+| Filtro de aceite                   |       30 |
+| Pastillas de freno                 |       25 |
+| Llanta                             |       15 |
+| Amortiguador                       |       18 |
+| Aceite de motor                    |       22 |
+| Filtro de aire                     |       35 |
+| Bujía                              |       28 |
+| Correa de distribución             |       17 |
+| Sensor de oxígeno                  |       20 |
+| Radiador                           |       10 |
+| Filtro de combustible              |       32 |
+| Bobina de encendido                |       25 |
+| Sensor de temperatura              |       28 |
+| Termostato                         |       20 |
+| Bombillo de faro                   |       40 |
+| Filtro de dirección asistida       |       23 |
+| Pastillas de freno traseras        |       30 |
+| Filtro de habitáculo               |       15 |
+| Sensor de posición del cigüeñal    |       22 |
+| Bomba de agua                      |       16 |
+| Correa de accesorios               |       25 |
+| Sensor de presión de aceite        |       30 |
+| Bomba de combustible               |       18 |
 5. Obtener las citas programadas para un día específico
 
  ```sql

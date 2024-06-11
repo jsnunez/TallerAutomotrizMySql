@@ -192,24 +192,29 @@ WHERE r.fkIdReparacion=2
 9. Obtener el inventario de piezas que necesitan ser reabastecidas (cantidad menor que un umbral)
 
  ```sql
-SELECT fkIdpieza FROM inventario
-WHERE cantidad <25;
+SELECT p.nombre,i.cantidad FROM inventario AS i
+JOIN pieza AS p
+ON p.id=i.fkIdpieza
+WHERE i.cantidad <25
+;
+
 
  ```
-| fkIdpieza |
-|-----------|
-|         4 |
-|         5 |
-|         6 |
-|         9 |
-|        10 |
-|        11 |
-|        15 |
-|        17 |
-|        19 |
-|        20 |
-|        21 |
-|        24 |
+| nombre                             | cantidad |
+|------------------------------------|----------|
+| Batería                            |       20 |
+| Llanta                             |       15 |
+| Amortiguador                       |       18 |
+| Aceite de motor                    |       22 |
+| Correa de distribución             |       17 |
+| Sensor de oxígeno                  |       20 |
+| Radiador                           |       10 |
+| Termostato                         |       20 |
+| Filtro de dirección asistida       |       23 |
+| Filtro de habitáculo               |       15 |
+| Sensor de posición del cigüeñal    |       22 |
+| Bomba de agua                      |       16 |
+| Bomba de combustible               |       18 |
 
  10. Obtener la lista de servicios más solicitados en un período específico
 

@@ -144,33 +144,34 @@ where fkIdCliente=13 AND fecha='2024-05-12';
 
 7. Listar todas las órdenes de compra y sus detalles
  ```sql
-
-SELECT fkIdOrdenC,fkIdpieza,cantidad,precio from ordendetalle;
+SELECT od.fkIdOrdenC,p.nombre,od.cantidad,od.precio from ordendetalle AS od
+JOIN pieza AS p
+ON p.id=od.fkIdpieza;
  ```
-| fkIdOrdenC | fkIdpieza | cantidad | precio    |
-|------------|-----------|----------|-----------|
-|          1 |         1 |       10 | 150000.00 |
-|          1 |         2 |       20 |  30000.00 |
-|          1 |         3 |       15 |  80000.00 |
-|          2 |         4 |        5 | 200000.00 |
-|          2 |         5 |        8 | 120000.00 |
-|          2 |         6 |       30 |  50000.00 |
-|          3 |         7 |       25 |  40000.00 |
-|          3 |         8 |       40 |  25000.00 |
-|          4 |         9 |       12 |  80000.00 |
-|          4 |        10 |       18 |  90000.00 |
-|          5 |        11 |        7 | 180000.00 |
-|          5 |        12 |       22 |  60000.00 |
-|          6 |        13 |       15 |  70000.00 |
-|          6 |        14 |       10 |  45000.00 |
-|          7 |        15 |       20 |  35000.00 |
-|          7 |        16 |      100 |   5000.00 |
-|          8 |        17 |       18 |  60000.00 |
-|          8 |        18 |       10 |  90000.00 |
-|          9 |        19 |       15 |  35000.00 |
-|          9 |        20 |       12 |  55000.00 |
-|         10 |        21 |        8 | 120000.00 |
-|         10 |        22 |       20 |  70000.00 |
+| fkIdOrdenC | nombre                             | cantidad | precio    |
+|------------|------------------------------------|----------|-----------|
+|          1 | Batería                            |       10 | 150000.00 |
+|          1 | Filtro de aceite                   |       20 |  30000.00 |
+|          1 | Pastillas de freno                 |       15 |  80000.00 |
+|          2 | Llanta                             |        5 | 200000.00 |
+|          2 | Amortiguador                       |        8 | 120000.00 |
+|          2 | Aceite de motor                    |       30 |  50000.00 |
+|          3 | Filtro de aire                     |       25 |  40000.00 |
+|          3 | Bujía                              |       40 |  25000.00 |
+|          4 | Correa de distribución             |       12 |  80000.00 |
+|          4 | Sensor de oxígeno                  |       18 |  90000.00 |
+|          5 | Radiador                           |        7 | 180000.00 |
+|          5 | Filtro de combustible              |       22 |  60000.00 |
+|          6 | Bobina de encendido                |       15 |  70000.00 |
+|          6 | Sensor de temperatura              |       10 |  45000.00 |
+|          7 | Termostato                         |       20 |  35000.00 |
+|          7 | Bombillo de faro                   |      100 |   5000.00 |
+|          8 | Filtro de dirección asistida       |       18 |  60000.00 |
+|          8 | Pastillas de freno traseras        |       10 |  90000.00 |
+|          9 | Filtro de habitáculo               |       15 |  35000.00 |
+|          9 | Sensor de posición del cigüeñal    |       12 |  55000.00 |
+|         10 | Bomba de agua                      |        8 | 120000.00 |
+|         10 | Correa de accesorios               |       20 |  70000.00 |
 
 8. Obtener el costo total de piezas utilizadas en una reparación específica
 
